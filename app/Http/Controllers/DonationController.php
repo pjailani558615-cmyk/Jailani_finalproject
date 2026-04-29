@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class DonationController extends Controller {
    public function store(Request $request) {
-      /*  $request->validate([
+        $request->validate([
             'fullname' => 'required|string|max:255',
             'sex' => 'required|in:male,female',
             'age' => 'required|integer|min:18|max:65',
@@ -16,8 +16,9 @@ class DonationController extends Controller {
             'address' => 'required|string|max:500',
             'bloodtype' => 'required|in:A-,A+,B-,B+,AB-,AB+,O-,O+',
             'weight' => 'required|numeric|min:50',
+            'dateoflastdonation' => 'nullable|date|before:today',
             'disease' => 'sometimes|boolean',
-        ]); */
+        ]);
 
         Donation::create([
             'user_id' => Auth::id(),

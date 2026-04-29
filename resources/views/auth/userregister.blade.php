@@ -74,7 +74,15 @@
                    name="password_confirmation" 
                    required>
 
-            <button type="submit">Register Donor</button>
+             <label for="role">Role</label>
+            <select id="role" name="role" required>
+                <option value="">Select Role</option>
+                <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                <option value="staff" {{ old('role') == 'staff' ? 'selected' : '' }}>Staff</option>
+                <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>User</option>
+            </select>
+
+            <button type="submit">Register User</button>
         </form>
 
         <p style="text-align: center; margin-top: 20px;">

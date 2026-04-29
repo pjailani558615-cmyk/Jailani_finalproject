@@ -23,7 +23,6 @@ class BloodRequest extends Model {
         'units',
         'urgency',
         'request_datetime',
-        'status',
     ];
 
     protected $casts = [
@@ -38,9 +37,6 @@ class BloodRequest extends Model {
     }
 
     // Scopes
-    public function scopePending($query) {
-        return $query->where('status', 'pending');
-    }
 
     public function scopeEmergency($query) {
         return $query->where('urgency', 'emergency');

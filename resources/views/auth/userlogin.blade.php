@@ -8,12 +8,6 @@
 </head>
 <body>
     <div class="login-container">
-        <!-- Top Navigation for Staff/Admin -->
-        <nav class="top-nav">
-            <a href="/staff-register" class="nav-btn">Staff</a>
-            <a href="/admin-register" class="nav-btn">Admin</a>
-        </nav>
-
         <!-- MORO Logo -->
         <img src="{{ asset('images/MORO.jpg') }}" alt="MORO Blood Bank Logo" onerror="this.style.display='none'">
 

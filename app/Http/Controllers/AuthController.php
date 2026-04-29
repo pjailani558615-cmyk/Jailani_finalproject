@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\Admin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
@@ -26,6 +25,7 @@ class AuthController extends Controller
             'sex' => 'required|in:male,female',
             'email' => 'required|email|unique:users,email',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => 'required|in:admin,staff,user',
         ]);
 
         User::create([
@@ -33,10 +33,11 @@ class AuthController extends Controller
             'age' => $request->age,
             'sex' => $request->sex,
             'email' => $request->email,
-            'password' => Hash::make($request->password),  // Explicit hashing
+            'password' => Hash::make($request->password),
+            'role' => $request->role,
         ]);
 
-        return redirect('/userlogin')->with('success', 'Donor registered successfully! Please login.');
+        return redirect('/userlogin')->with('success', 'User registered successfully! Please login.');
     }
 
 
@@ -52,7 +53,15 @@ public function login(Request $request) {
 
     if (Auth::attempt($credentials, $request->boolean('remember'))) {
         $request->session()->regenerate();
-        return redirect()->intended('/userdashboard');
+        $role = Auth::user()->role;
+
+        return match ($role) {
+            'admin' => redirect('/admin/admindashboard'),
+            'staff' => redirect('/staff/staffdashboard'),
+            'user' => redirect('/userdashboard'),
+            default => redirect('/userlogin')->withErrors(['email' => 'Invalid role.']),
+        };
+
     }
 
     return back()->withErrors([
@@ -66,39 +75,6 @@ public function logout(Request $request) {
     $request->session()->regenerateToken();
     return redirect('/userlogin');
 }
-
-public function showStaffRegister() {
-    return view('auth.staff-register');
-}
-
-public function showAdminRegister() {
-    return view('auth.admin-register');
-}
-
-
-public function adminRegister(Request $request)
-    {
-        // 1) VALIDATE HERE
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'age' => 'required|integer|min:21|max:65',
-            'sex' => 'required|in:male,female',
-            'email' => 'required|email|unique:admins',
-            'password' => 'required|min:8|confirmed',
-        ]);  // [web:46][web:49]
-
-        // 2) CREATE ADMIN AFTER VALIDATION
-        Admin::create([
-            'name' => $request->name,
-            'age' => $request->age,
-            'sex' => $request->sex,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        // 3) REDIRECT WITH SUCCESS MESSAGE
-       return redirect('/admin-login')->with('success', 'Admin registered successfully! Please login.');
-    }
 
 
 }

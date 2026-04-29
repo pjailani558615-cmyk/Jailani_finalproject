@@ -154,21 +154,29 @@
 
             <form action="{{ route('staff.notify.send') }}" method="POST">
                 @csrf
-                <label for="receiver_email">Recipient Email (Donor/Requester)</label>
-                <input type="email" 
-                       id="receiver_email" 
-                       name="receiver_email" 
-                       value="{{ old('receiver_email') }}"
+                <label for="recipient_id">Recipient ID</label>
+                <input type="text" 
+                       id="recipient_id" 
+                       name="recipient_id" 
+                       value="{{ old('recipient_id') }}"
                        required 
-                       placeholder="donor@example.com">
+                       placeholder="Enter recipient's user ID">
+
+                <label for="sender_id">Sender ID</label>
+                <input type="text" 
+                       id="sender_id" 
+                       name="sender_id" 
+                       value="{{ old('sender_id') }}"
+                       required 
+                       placeholder="Enter sender's user ID">
 
                 <label for="message">Message</label>
-                <textarea name="message" 
-                          id="message" 
-                          rows="6" 
-                          required 
-                          placeholder="Your appointment is scheduled..."
-                          style="width: 100%; padding: 12px; border: 2px solid #f4f194; border-radius: 6px;">{{ old('message') }}</textarea>
+                <select id="message" name="message" required>
+                <option value="">Select Message</option>
+                <option value="pending" {{ old('message') == 'pending' ? 'selected' : '' }}>Pending</option>
+                <option value="approved" {{ old('message') == 'approved' ? 'selected' : '' }}>Approved</option>
+                <option value="rejected" {{ old('message') == 'rejected' ? 'selected' : '' }}>Rejected</option>
+            </select>
 
                 <button type="submit" style="background: #753B2F; color: #FEFDF1;">📧 Send Notification</button>
             </form>
@@ -183,7 +191,7 @@
                     @forelse($recent_notifications as $notification)
                         <tr>
                             <td>{{ $notification->created_at->format('M d, H:i') }}</td>
-                            <td>{{ $notification->receiver_email }}</td>
+                            <td>{{ $notification->recipient_id }}</td>
                             <td>{{ Str::limit($notification->subject, 30) }}</td>
                             <td><span style="color: #155724;">Sent</span></td>
                         </tr>
@@ -217,17 +225,16 @@
                     @csrf
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                         <div>
-                            <label>Donor Name</label>
-                            <select name="donor_id" required>
-                                <option value="">Select Donor</option>
-                                @foreach($donors as $donor)
-                                    <option value="{{ $donor->id }}">{{ $donor->fullname }} ({{ $donor->bloodtype }})</option>
-                                @endforeach
-                            </select>
+                             <label>Donation ID</label>
+                             <input type="text" name="donation_id" required placeholder="Enter Donation ID">
                         </div>
                         <div>
                             <label>Blood Type</label>
                             <input type="text" name="blood_type" required placeholder="A+, O-, etc.">
+                        </div>
+                         <div>
+                           <label>Request ID</label>
+                           <input type="text" name="request_id" required placeholder="Enter Request ID">
                         </div>
                         <div>
                             <label>Volume (ml)</label>
@@ -248,9 +255,9 @@
                 <thead>
                     <tr>
                         <th>Unit ID</th>
-                        <th>Donor</th>
+                        <th>Donation ID</th>
                         <th>Blood Type</th>
-                        <th>Requestor</th>
+                        <th>Request ID</th>
                         <th>Volume</th>
                         <th>Expires</th>
                     </tr>
@@ -259,26 +266,19 @@
                     @forelse($blood_units as $unit)
                         <tr>
                             <td>#{{ $unit->id }}</td>
-                            <td>{{ $unit->donation->fullname ?? 'N/A' }}</td>
+                            <td>{{ $unit->donation_id }}</td>
                             <td><strong>{{ $unit->blood_type }}</strong></td>
-                            <td>{{ $unit->request ? $unit->request->patient_name ?? $unit->request->fullname: '-' }}</td>
+                            <td>{{ $unit->request_id ?? '-' }}</td>
                             <td>{{ $unit->volume }}ml</td>
-                            <td>{{ $unit->collection_date?->format('M d') }}</td>
                             <td style="color: {{ $unit->expiry_date < now() ? '#dc3545' : '#28a745' }}">
                                 {{ $unit->expiry_date?->format('M d') }}
-                            </td>
-                            <td>{{ $unit->location }}</td>
-                            <td>
-                                <span class="status-{{ $unit->status }}">
-                                    {{ ucfirst($unit->status) }}
-                                </span>
                             </td>
                             <td>
                                 <button onclick="editUnit({{ $unit->id }})" style="background: #ffc107;">Edit</button>
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="10" style="text-align: center; padding: 40px;">No blood units registered</td></tr>
+                        <tr><td colspan="7" style="text-align: center; padding: 40px;">No blood units registered</td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -287,12 +287,21 @@
 
     <!-- Staff Tab Switcher JavaScript (same as donor dashboard) -->
     <script>
-   (function() {
     'use strict';
 
     // Get all sections and nav links
     const sections = document.querySelectorAll('.staff');
     const navLinks = document.querySelectorAll('.staffbar a[href="#"]');
+
+    function showForm(id) {
+        // Find the element by adding '-form' to the passed id to match your HTML
+        document.getElementById(id + '-form').style.display = 'block';
+    }
+
+    function hideForm(id) {
+        // Set display to 'none' to hide it again
+        document.getElementById(id + '-form').style.display = 'none';
+    }
     
     // Show specific section and update active states
     function showSection(sectionId) {
@@ -352,5 +361,4 @@
         }
     });
 
-})();
     </script>

@@ -21,7 +21,6 @@ return new class extends Migration {
             $table->integer('units');
             $table->enum('urgency', ['normal', 'emergency']);
             $table->datetime('request_datetime');
-            $table->enum('status', ['pending', 'approved', 'fulfilled'])->default('pending');
             $table->timestamps();
         });
     }

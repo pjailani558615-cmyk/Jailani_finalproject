@@ -9,14 +9,12 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('staff_id')->constrained()->onDelete('cascade');
-            $table->string('receiver_email');
-            $table->text('message');
-            $table->enum('status', ['sent', 'failed', 'pending'])->default('pending');
+            $table->foreignId('recipient_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('sender_id')->constrained('users')->onDelete('cascade');
+            $table->enum('message', ['pending', 'approved', 'rejected']);
             $table->timestamps();
 
-            $table->index('receiver_email');
-            $table->index('status');
+            $table->index('recipient_id');
         });
     }
 

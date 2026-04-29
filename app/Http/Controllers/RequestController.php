@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class RequestController extends Controller {
     public function store(Request $request) {
-       /* $request->validate([
+        $request->validate([
             'requester_type' => 'required|in:hospital,patient',
             'patient_name' => 'required|string|max:255',
             'patient_age' => 'required|integer|min:0|max:120',
@@ -19,7 +19,7 @@ class RequestController extends Controller {
             'units' => 'required|integer|min:1|max:10',
             'urgency' => 'required|in:normal,emergency',
             'request_datetime' => 'required|date|after:now',
-        ]); */
+        ]);
 
         BloodRequest::create([
             'user_id' => Auth::id(),

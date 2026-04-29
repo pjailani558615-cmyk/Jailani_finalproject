@@ -3,29 +3,29 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Notification extends Model {
     use HasFactory;
 
     protected $fillable = [
-        'staff_id',
-        'receiver_email',
+        'recipient_id',
+        'sender_id',
         'message',
-        'status',
     ];
 
     // Relationships
-    public function staff() {
-        return $this->belongsTo(Staff::class);
+   public function recipient() {
+        return $this->belongsTo(User::class, 'recipient_id');
+    }
+
+    public function sender() {
+        return $this->belongsTo(User::class, 'sender_id');
     }
 
     // Scopes
     public function scopeRecent($query) {
         return $query->latest()->take(10);
-    }
-
-    public function scopeSent($query) {
-        return $query->where('status', 'sent');
     }
 }
 

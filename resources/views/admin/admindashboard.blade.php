@@ -33,7 +33,7 @@
             <h1>MORO General Report</h1>
             <form method="POST" action="{{ route('report.pdf') }}" style="display: inline;">
     @csrf
-    <button type="submit" style="background: #753B2F; color: #FEFDF1; hover: #000000; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Generate PDF Report</button>
+    <button type="button" onclick="window.location.href='{{ route('admin.pdf-report') }}'" style="background: #753B2F; color: #FEFDF1; hover: #000000; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Generate PDF Report</button>
 </form>
 
             <h3>Admin:</h3>

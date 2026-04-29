@@ -31,6 +31,30 @@
                 <p><strong>Gender:</strong> {{ ucfirst(auth()->user()->sex) }}</p>
                 <p><strong>Member since:</strong> {{ auth()->user()->created_at->format('M d, Y') }}</p>
             </div>
+            <!-- Notifications inbox -->
+<div style="margin-top: 24px;">
+    <h3 style="margin-bottom: 12px;">📬 Notifications</h3>
+
+    @if($notifications->isEmpty())
+        <p style="color: #888;">No notifications yet.</p>
+    @else
+        @foreach($notifications as $notif)
+            <div style="
+    background: #fffde7;
+    border-left: 4px solid #753B2F;
+    padding: 14px 16px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+">
+    <p style="margin: 0 0 6px;">{{ $notif->message }}</p>
+    <small style="color: #888;">
+        From: <strong>{{ $notif->sender->name }}</strong> &bull;
+        {{ $notif->created_at->diffForHumans() }}
+    </small>
+</div>
+        @endforeach
+    @endif
+</div>
         </section>
 
         <!-- Donation Form Section -->
@@ -60,11 +84,11 @@
                 <input type="number" id="age" name="age" value="{{ old('age', auth()->user()->age) }}" min="18" max="65" required>
 
                 <h3>Contact Information</h3>
-                <label for="phone">Phone No</label>
-                <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" required>
+                <label for="donation_phone">Phone No</label>
+                <input type="tel" id="donation_phone" name="phone" value="{{ old('donation_phone') }}" required>
 
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" value="{{ old('email', auth()->user()->email) }}" required>
+                <label for="donation_email">Email</label>
+                <input type="email" id="donation_email" name="email" value="{{ old('donation_email', auth()->user()->email) }}" required>
 
                 <label for="address">Address</label>
                 <input type="text" id="address" name="address" value="{{ old('address') }}" required>
@@ -134,11 +158,11 @@
                 </select>
 
                 <h3>Contact Information</h3>
-                <label for="phone">Phone No</label>
-                <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" required>
+                <label for="request_phone">Phone No</label>
+                <input type="tel" id="request_phone" name="phone" value="{{ old('request_phone') }}" required>
 
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" value="{{ old('email', auth()->user()->email) }}" required>
+                <label for="request_email">Email</label>
+                <input type="email" id="request_email" name="email" value="{{ old('request_email', auth()->user()->email) }}" required>
 
                 <label for="address">Address</label>
                 <input type="text" id="address" name="address" value="{{ old('address') }}" required>
@@ -148,14 +172,14 @@
                 <select id="required_blood_type" name="required_blood_type" required>
                     <!-- Same blood type options as donation -->
                     <option value="">Select Blood Type</option>
-                    <option value="A-" {{ old('bloodtype') == 'A-' ? 'selected' : '' }}>A-</option>
-                    <option value="A+" {{ old('bloodtype') == 'A+' ? 'selected' : '' }}>A+</option>
-                    <option value="B-" {{ old('bloodtype') == 'B-' ? 'selected' : '' }}>B-</option>
-                    <option value="B+" {{ old('bloodtype') == 'B+' ? 'selected' : '' }}>B+</option>
-                    <option value="AB-" {{ old('bloodtype') == 'AB-' ? 'selected' : '' }}>AB-</option>
-                    <option value="AB+" {{ old('bloodtype') == 'AB+' ? 'selected' : '' }}>AB+</option>
-                    <option value="O-" {{ old('bloodtype') == 'O-' ? 'selected' : '' }}>O-</option>
-                    <option value="O+" {{ old('bloodtype') == 'O+' ? 'selected' : '' }}>O+</option>
+                    <option value="A-" {{ old('required_blood_type') == 'A-' ? 'selected' : '' }}>A-</option>
+                    <option value="A+" {{ old('required_blood_type') == 'A+' ? 'selected' : '' }}>A+</option>
+                    <option value="B-" {{ old('required_blood_type') == 'B-' ? 'selected' : '' }}>B-</option>
+                    <option value="B+" {{ old('required_blood_type') == 'B+' ? 'selected' : '' }}>B+</option>
+                    <option value="AB-" {{ old('required_blood_type') == 'AB-' ? 'selected' : '' }}>AB-</option>
+                    <option value="AB+" {{ old('required_blood_type') == 'AB+' ? 'selected' : '' }}>AB+</option>
+                    <option value="O-" {{ old('required_blood_type') == 'O-' ? 'selected' : '' }}>O-</option>
+                    <option value="O+" {{ old('required_blood_type') == 'O+' ? 'selected' : '' }}>O+</option>
                 </select>
 
                 <label for="units">Units Required</label>
