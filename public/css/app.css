@@ -1,0 +1,191 @@
+/* ===== 1. GLOBAL RESET & MAIN OFFSET (ADD AT TOP) ===== */
+body { 
+    font-family: Calibri, sans-serif;
+    background-color: #FEFDF1;
+    margin: 0;
+    padding: 0;
+}
+
+/* ===== 2. COMMON FORM STYLES (REPLACE ALL DUPLICATES) ===== */
+.sign-up-container, .login-container, .staff-sign-up, 
+.staff-login, .admin-sign-up, .admin-login {
+    width: 300px;
+    margin: 100px auto;
+    background-color: #753B2F;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    color: #FEFDF1; 
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
+
+.sign-up-container a, .login-container a, .staff-sign-up a, 
+.staff-login a, .admin-sign-up a, .admin-login a {
+    background-color: #753B2F;
+    color: #FEFDF1;
+    padding: 10px 20px;
+    text-decoration: underline;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.sign-up-container a:hover, .login-container a:hover, .staff-sign-up a:hover, 
+.staff-login a:hover, .admin-sign-up a:hover, .admin-login a:hover {
+    background-color: black;
+    color: white;
+}
+
+button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #FEFDF1;
+    color: #753B2F;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button:hover { background-color: black; color: white; }  /* Unified hover */
+
+.top-nav {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.login-container img, .staff-login img, .admin-login img {
+    display: block;
+    margin: 0 auto 20px;
+    max-width: 100%;
+    height: auto;
+}
+
+/* ===== 3. SIDEBAR & NAV FIXES ===== */
+.sidebar, .staffbar, .adminbar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 250px;
+    height: 100vh;
+    background-color: #753B2F;
+    padding: 20px 0;
+}
+
+.sidebar a, .staffbar a, .adminbar a {
+    display: block;
+    color: #FEFDF1;
+    padding: 15px 20px;
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.sidebar a:hover, .staffbar a:hover, .adminbar a:hover{
+    background-color: black;
+    color: white;
+}
+
+/* Content areas */
+.page-content, .staff, .admin {
+    display: none;
+    margin-left: 250px;
+    padding-top: 80px;
+    background-color: #FEFDF1;
+}
+
+.page-content label, .staff label, .admin label, .page-content h3,
+.staff h3, .admin h3 {
+    text-align: center;
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    color: #000000; 
+}
+
+.sign-up-container h2, .sign-up-container p {
+    color: #FEFDF1;
+}
+
+.login-container h2, .login-container p {
+    color: #FEFDF1;
+}
+
+.staff-sign-up h2, .staff-sign-up p {
+    color: #FEFDF1;
+}
+
+.staff-login h2, .staff-login p {
+    color: #FEFDF1;
+}
+
+.admin-sign-up h2, .admin-sign-up p {
+    color: #FEFDF1;
+}
+
+.admin-login h2, .admin-login p {
+    color: #FEFDF1;
+}
+
+.page-content input, .staff input, .admin input, .page-content select,
+.staff select, .admin select{
+    margin-bottom: 10px;
+}
+
+.page-content button, .staff button, .admin button {
+    background: #753B2F;
+    color: #FEFDF1;
+    margin-bottom: 10px;
+}
+
+.page-content.active, .staff.active, .admin.active {
+    display: block;
+}
+
+/* Tables (your staff/admin tables) */
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin: 20px 0; 
+}
+th { 
+    background: #753B2F; 
+    color: #FEFDF1; 
+    padding: 12px; 
+    font-weight: bold; 
+}
+td { 
+    padding: 12px; 
+    border-bottom: 1px solid #000000;
+    color: #000000; 
+}
+th, td { border: 1px solid #000000; text-align: left; }
+
+/* Headings & Images (keep your originals) */
+h1, h2 { 
+    text-align: center;
+    margin-bottom: 20px;
+    color: #000000;
+}
+
+h4, p {
+    color: #000000;
+}
+
+.sidebar img, .staffbar img, .adminbar img {
+    width: 150px;
+    height: auto;
+    max-width: 100%;
+}
+
