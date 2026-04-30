@@ -41,8 +41,8 @@
                     <h2>{{ $stats['total_donations'] ?? 0 }}</h2>
                 </div>
                 <div style="background: #FEFDF1; padding: 20px; border-radius: 8px;">
-                    <h4>Pending Requests</h4>
-                    <h2>{{ $stats['pending_requests'] ?? 0 }}</h2>
+                    <h4>Total Requests</h4>
+                    <h2>{{ $stats['total_requests'] ?? 0 }}</h2>
                 </div>
             </div>
         </section>
@@ -250,6 +250,39 @@
                 </form>
             </div>
 
+            <!-- Edit Unit Form (Hidden by default) -->
+<div id="edit-unit-form" style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; display: none;">
+    <h3 style="margin-top: 0;">Edit Blood Unit</h3>
+    <form id="edit-unit-form-tag" action="" method="POST">
+        @csrf
+        @method('PUT')
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+                <label>Donation ID</label>
+                <input type="text" name="donation_id" id="edit-donation-id" required>
+            </div>
+            <div>
+                <label>Blood Type</label>
+                <input type="text" name="blood_type" id="edit-blood-type" required>
+            </div>
+            <div>
+                <label>Request ID</label>
+                <input type="text" name="request_id" id="edit-request-id">
+            </div>
+            <div>
+                <label>Volume (ml)</label>
+                <input type="number" name="volume" id="edit-volume" min="350" max="500" required>
+            </div>
+            <div>
+                <label>Expiry Date</label>
+                <input type="date" name="expiry_date" id="edit-expiry-date" required>
+            </div>
+        </div>
+        <button type="submit" style="margin-top: 20px;">💾 Save Changes</button>
+        <button type="button" onclick="document.getElementById('edit-unit-form').style.display='none'" style="margin-left: 10px;">Cancel</button>
+    </form>
+</div>
+
             <!-- Blood Units Table -->
             <table>
                 <thead>
@@ -292,6 +325,7 @@
     // Get all sections and nav links
     const sections = document.querySelectorAll('.staff');
     const navLinks = document.querySelectorAll('.staffbar a[href="#"]');
+    const bloodUnits = @json($blood_units);
 
     function showForm(id) {
         // Find the element by adding '-form' to the passed id to match your HTML
@@ -322,6 +356,25 @@
             link.classList.remove('active');
         });
         event?.target?.classList.add('active');
+    }
+ 
+      function editUnit(id) {
+        const unit = bloodUnits.find(u => u.id === id);
+        if (!unit) return alert('Unit not found.');
+
+        // Populate form fields
+        document.getElementById('edit-donation-id').value  = unit.donation_id;
+        document.getElementById('edit-blood-type').value   = unit.blood_type;
+        document.getElementById('edit-request-id').value   = unit.request_id ?? '';
+        document.getElementById('edit-volume').value       = unit.volume;
+        document.getElementById('edit-expiry-date').value  = unit.expiry_date?.split('T')[0] ?? '';
+
+        // Set form action to the correct route
+        document.getElementById('edit-unit-form-tag').action = `/staff/unit/${id}`;
+
+        // Show the form
+        document.getElementById('edit-unit-form').style.display = 'block';
+        document.getElementById('edit-unit-form').scrollIntoView({ behavior: 'smooth' });
     }
 
      // Utility functions

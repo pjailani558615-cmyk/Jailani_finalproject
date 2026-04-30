@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/staffdashboard', [DashboardController::class, 'staff'])->name('staffdashboard');
     Route::post('/staff/notify', [NotificationController::class, 'send'])->name('staff.notify.send');
     Route::post('/staff/unit', [BloodUnitController::class, 'store'])->name('staff.unit.store');
+    Route::put('/staff/unit/{id}', [BloodUnitController::class, 'update'])->name('staff.unit.update');
     Route::post('/staff/logout', [AuthController::class, 'logout'])->name('staff.logout');
 });
 

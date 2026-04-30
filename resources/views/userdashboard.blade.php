@@ -36,7 +36,7 @@
     <h3 style="margin-bottom: 12px;">📬 Notifications</h3>
 
     @if($notifications->isEmpty())
-        <p style="color: #888;">No notifications yet.</p>
+        <p style="color: #000000; background: #F4F194">No notifications yet.</p>
     @else
         @foreach($notifications as $notif)
             <div style="

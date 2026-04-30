@@ -56,8 +56,8 @@ public function login(Request $request) {
         $role = Auth::user()->role;
 
         return match ($role) {
-            'admin' => redirect('/admin/admindashboard'),
-            'staff' => redirect('/staff/staffdashboard'),
+            'admin' => redirect('/admindashboard'),
+            'staff' => redirect('/staffdashboard'),
             'user' => redirect('/userdashboard'),
             default => redirect('/userlogin')->withErrors(['email' => 'Invalid role.']),
         };

@@ -23,7 +23,7 @@
             <div style="background: #FEFDF1; padding: 20px; border-radius: 8px; margin: 20px 0;">
         <h3>Welcome, {{ auth()->user()->name }}!</h3>
         <p><strong>Email:</strong> {{ auth()->user()->email }}</p>
-        <p><strong>Age:</strong> {{ $admin->age ?? auth('admin')->user()->age }} years</p>
+        <p><strong>Age:</strong> {{ $admin->age ?? auth()->user()->age }} years</p>
         <p><strong>Gender:</strong> {{ ucfirst(auth()->user()->sex) }}</p>
         <p><strong>Member since:</strong> {{ ( auth()->user()->created_at)->format('M d, Y') }}</p>
 </div>
@@ -33,7 +33,7 @@
             <h1>MORO General Report</h1>
             <form method="POST" action="{{ route('report.pdf') }}" style="display: inline;">
     @csrf
-    <button type="button" onclick="window.location.href='{{ route('admin.pdf-report') }}'" style="background: #753B2F; color: #FEFDF1; hover: #000000; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Generate PDF Report</button>
+    <button type="submit" style="background: #753B2F; color: #FEFDF1; hover: #000000; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Generate PDF Report</button>
 </form>
 
             <h3>Admin:</h3>
@@ -131,7 +131,6 @@
                         <th>Weight</th>
                         <th>Last Donation</th>
                         <th>Has Disease?</th>
-                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -149,7 +148,6 @@
                             <td>{{ $donor->weight }}</td>
                             <td>{{ $donor->last_donation }}</td>
                             <td>{{ $donor->has_disease ? 'Yes' : 'No' }}</td>
-                            <td>{{ $donor->status }}</td>
                         </tr>
                     @endforeach --}}
                 </tbody>
@@ -172,7 +170,6 @@
                         <th>Quantity</th>
                         <th>Urgency</th>
                         <th>Date&Time of Request</th>
-                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -191,7 +188,6 @@
                             <td>{{ $requestor->quantity }}</td>
                             <td>{{ $requestor->urgency }}</td>
                             <td>{{ $requestor->created_at }}</td>
-                            <td>{{ $requestor->status }}</td>
                         </tr>
                     @endforeach --}}
                 </tbody>
@@ -202,20 +198,20 @@
                 <thead>
                     <tr>
                         <th>Blood Unit ID</th>
-                        <th>Donor Name</th>
+                        <th>Donor ID</th>
                         <th>Blood Type</th>
-                        <th>Requestor Name</th>
-                        <th>Status</th>
+                        <th>Requestor ID</th>
+                        <th>Expiry Date</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{-- @foreach ($bloodUnits as $unit)
                         <tr>
                             <td>{{ $unit->id }}</td>
-                            <td>{{ $unit->donor_name }}</td>
+                            <td>{{ $unit->donor_id }}</td>
                             <td>{{ $unit->blood_type }}</td>
-                            <td>{{ $unit->requestor_name }}</td>
-                            <td>{{ $unit->status }}</td>
+                            <td>{{ $unit->requestor_id }}</td>
+                            <td>{{ $unit->expiry_date }}</td>
                         </tr>
                     @endforeach --}}
                 </tbody>
