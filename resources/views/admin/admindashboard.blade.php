@@ -36,59 +36,6 @@
     <button type="submit" style="background: #753B2F; color: #FEFDF1; hover: #000000; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Generate PDF Report</button>
 </form>
 
-            <h3>Admin:</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Admin ID</th>
-                        <th>Admin Name</th>
-                        <th>Age</th>
-                        <th>Sex</th>
-                        <th>Email</th>
-                        <th>Password</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Example row using Blade (will be filled from controller) -->
-                    {{-- @foreach ($admins as $admin)
-                        <tr>
-                            <td>{{ $admin->id }}</td>
-                            <td>{{ $admin->name }}</td>
-                            <td>{{ $admin->age }}</td>
-                            <td>{{ $admin->sex }}</td>
-                            <td>{{ $admin->email }}</td>
-                            <td>•••••••</td>
-                        </tr>
-                    @endforeach --}}
-                </tbody>
-            </table>
-
-            <h3>Staff:</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Staff ID</th>
-                        <th>Staff Name</th>
-                        <th>Age</th>
-                        <th>Sex</th>
-                        <th>Email</th>
-                        <th>Password</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{-- @foreach ($staffs as $staff)
-                        <tr>
-                            <td>{{ $staff->id }}</td>
-                            <td>{{ $staff->name }}</td>
-                            <td>{{ $staff->age }}</td>
-                            <td>{{ $staff->sex }}</td>
-                            <td>{{ $staff->email }}</td>
-                            <td>•••••••</td>
-                        </tr>
-                    @endforeach --}}
-                </tbody>
-            </table>
-
             <h3>Users:</h3>
             <table>
                 <thead>
@@ -99,10 +46,11 @@
                         <th>Sex</th>
                         <th>Email</th>
                         <th>Password</th>
+                        <th>Role</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- @foreach ($users as $user)
+                     @foreach ($users as $user)
                         <tr>
                             <td>{{ $user->id }}</td>
                             <td>{{ $user->name }}</td>
@@ -110,8 +58,9 @@
                             <td>{{ $user->sex }}</td>
                             <td>{{ $user->email }}</td>
                             <td>•••••••</td>
+                            <td>{{ $user->role }}</td>
                         </tr>
-                    @endforeach --}}
+                    @endforeach
                 </tbody>
             </table>
 
@@ -134,7 +83,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- @foreach ($donors as $donor)
+                     @foreach ($donors as $donor)
                         <tr>
                             <td>{{ $donor->id }}</td>
                             <td>{{ $donor->user_id }}</td>
@@ -149,7 +98,7 @@
                             <td>{{ $donor->last_donation }}</td>
                             <td>{{ $donor->has_disease ? 'Yes' : 'No' }}</td>
                         </tr>
-                    @endforeach --}}
+                    @endforeach 
                 </tbody>
             </table>
 
@@ -173,7 +122,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- @foreach ($requestors as $requestor)
+                     @foreach ($requestors as $requestor)
                         <tr>
                             <td>{{ $requestor->id }}</td>
                             <td>{{ $requestor->user_id }}</td>
@@ -189,7 +138,7 @@
                             <td>{{ $requestor->urgency }}</td>
                             <td>{{ $requestor->created_at }}</td>
                         </tr>
-                    @endforeach --}}
+                    @endforeach 
                 </tbody>
             </table>
 
@@ -198,22 +147,22 @@
                 <thead>
                     <tr>
                         <th>Blood Unit ID</th>
-                        <th>Donor ID</th>
+                        <th>Donation ID</th>
                         <th>Blood Type</th>
-                        <th>Requestor ID</th>
+                        <th>Request ID</th>
                         <th>Expiry Date</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- @foreach ($bloodUnits as $unit)
+                     @foreach ($bloodUnits as $unit)
                         <tr>
                             <td>{{ $unit->id }}</td>
-                            <td>{{ $unit->donor_id }}</td>
+                            <td>{{ $unit->donation_id }}</td>
                             <td>{{ $unit->blood_type }}</td>
-                            <td>{{ $unit->requestor_id }}</td>
+                            <td>{{ $unit->request_id }}</td>
                             <td>{{ $unit->expiry_date }}</td>
                         </tr>
-                    @endforeach --}}
+                    @endforeach 
                 </tbody>
             </table>
         </section>
