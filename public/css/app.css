@@ -27,6 +27,7 @@ input, select {
     width: 100%;
     padding: 8px;
     margin-top: 5px;
+    box-sizing: border-box;
 }
 
 .sign-up-container a, .login-container a, .staff-sign-up a, 
@@ -49,7 +50,7 @@ input, select {
 button {
     width: 100%;
     margin-top: 20px;
-    padding: 10px;
+    padding: 8px;
     background-color: #FEFDF1;
     color: #753B2F;
     border: none;
@@ -101,7 +102,7 @@ button:hover { background-color: black; color: white; }  /* Unified hover */
 .page-content, .staff, .admin {
     display: none;
     margin-left: 250px;
-    padding-top: 80px;
+    padding: 80px 30px 0 30px;
     background-color: #FEFDF1;
 }
 
@@ -140,13 +141,21 @@ button:hover { background-color: black; color: white; }  /* Unified hover */
 
 .page-content input, .staff input, .admin input, .page-content select,
 .staff select, .admin select{
-    margin-bottom: 10px;
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 5px;
+    box-sizing: border-box;
 }
 
 .page-content button, .staff button, .admin button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 8px;
     background: #753B2F;
     color: #FEFDF1;
-    margin-bottom: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
 }
 
 .page-content.active, .staff.active, .admin.active {

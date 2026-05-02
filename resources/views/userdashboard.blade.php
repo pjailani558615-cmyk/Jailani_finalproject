@@ -24,7 +24,7 @@
         <!-- Account Section (Active by default) -->
         <section id="account" class="page-content active">
             <h1>Your Account</h1>
-            <div style="background: #FEFDF1; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <div style="background: #f4f194; padding: 20px; border-radius: 8px; margin: 20px 0;">
                 <h3>Welcome, {{ auth()->user()->name }}!</h3>
                 <p><strong>Email:</strong> {{ auth()->user()->email }}</p>
                 <p><strong>Age:</strong> {{ auth()->user()->age }} years</p>
@@ -40,7 +40,7 @@
     @else
         @foreach($notifications as $notif)
             <div style="
-    background: #fffde7;
+    background: #f4f194;
     border-left: 4px solid #753B2F;
     padding: 14px 16px;
     border-radius: 6px;
@@ -115,9 +115,9 @@
 
                 <p style="font-size: 14px; color: #000000;">Leave blank if first donation</p>
 
-                <label style="display: flex; align-items: center;" class="checkbox-wrapper">
+                <label style="display: flex; align-items: center; justify-content: center; width: fit-content; margin-left: auto; margin-right: auto;" class="checkbox-wrapper">
                     <input type="checkbox" class="checkbox-wrapper" id="disease" name="disease" value="yes" {{ old('disease') ? 'checked' : '' }}>
-                    <span style="margin-left: 10px;">Do you have any disease or current illness?</span>
+                    <span style="margin-left: 10px; font-weight: bold;">Do you have any disease or current illness?</span>
                 </label>
 
                 <button type="submit">Submit Donation Request</button>

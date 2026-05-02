@@ -28,7 +28,7 @@
         <!-- Staff Account Section (Default Active) -->
         <section id="staffaccount" class="staff active">
             <h1>Staff Account Dashboard</h1>
-            <div style="background: #FEFDF1; padding: 25px; border-radius: 8px; margin: 20px 0;">
+            <div style="background: #f4f194; padding: 25px; border-radius: 8px; margin: 20px 0;">
                 <h3>Welcome, {{ auth()->user()->name }}!</h3>
                 <p><strong>Email:</strong> {{ auth()->user()->email }}</p>
                 <p><strong>Age:</strong> {{ auth()->user()->age }} years</p>
@@ -152,7 +152,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('staff.notify.send') }}" method="POST">
+            <form action="{{ route('staff.notify.send') }}" method="POST" style="background: #f4f194;">
                 @csrf
                 <label for="recipient_id">Recipient ID</label>
                 <input type="text" 
@@ -219,7 +219,7 @@
             @endif
 
             <!-- Create Unit Form (Hidden by default) -->
-            <div id="create-unit-form" style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; display: none;">
+            <div id="create-unit-form" style="background: #f4f194; padding: 20px; border-radius: 8px; margin-bottom: 20px; display: none;">
                 <h3 style="margin-top: 0;">Register New Blood Unit</h3>
                 <form action="{{ route('staff.unit.store') }}" method="POST">
                     @csrf
@@ -251,7 +251,7 @@
             </div>
 
             <!-- Edit Unit Form (Hidden by default) -->
-<div id="edit-unit-form" style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; display: none;">
+<div id="edit-unit-form" style="background: #f4f194; padding: 20px; border-radius: 8px; margin-bottom: 20px; display: none;">
     <h3 style="margin-top: 0;">Edit Blood Unit</h3>
     <form id="edit-unit-form-tag" action="" method="POST">
         @csrf

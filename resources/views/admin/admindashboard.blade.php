@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="adminbar">
-        <img src="{{ asset('pic/MORO.jpg') }}" alt="MORO logo">
+        <img src="{{ asset('images/MORO.jpg') }}" alt="MORO logo">
         <a href="#" onclick="showSection('adminaccount')" class="nav-link">1 Admin Account</a>
         <a href="#" onclick="showSection('generalreport')" class="nav-link">2 General Report</a>
         <a href="{{ route('admin.logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
@@ -20,7 +20,7 @@
     <div class="admin-content">
         <section id="adminaccount" class="admin active">
             <h1>Admin Account</h1>
-            <div style="background: #FEFDF1; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <div style="background: #f4f194; padding: 20px; border-radius: 8px; margin: 20px 0;">
         <h3>Welcome, {{ auth()->user()->name }}!</h3>
         <p><strong>Email:</strong> {{ auth()->user()->email }}</p>
         <p><strong>Age:</strong> {{ $admin->age ?? auth()->user()->age }} years</p>
