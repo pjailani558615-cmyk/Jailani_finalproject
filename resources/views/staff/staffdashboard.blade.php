@@ -7,336 +7,533 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staff Dashboard - Blood Donation System</title>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* ── Reset & Base ── */
+        /* ===== CSS VARIABLES (mirrored from user dashboard) ===== */
+        :root {
+            --red:       #753B2F;
+            --red-dark:  #5a2d23;
+            --yellow:    #f4f194;
+            --yellow-dk: #e8e46a;
+            --bg:        #faf9f4;
+            --text:      #1a1a1a;
+            --muted:     #6b6b6b;
+            --border:    #e0ddd0;
+            --sidebar-w: 230px;
+            --radius:    10px;
+            --shadow:    0 2px 12px rgba(0,0,0,.08);
+            --font:      'DM Sans', sans-serif;
+        }
+
+        /* ===== RESET ===== */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
-            font-family: sans-serif;
-            background: #f5f5f5;
-            display: flex;
-            flex-direction: column;
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
-        }
-
-        /* ── Sidebar / Top-nav ── */
-        .staffbar {
-            background: #753B2F;
             display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 20px 16px;
-            width: 220px;
-            min-height: 100vh;
-            position: fixed;
-            top: 0; left: 0;
-            z-index: 100;
-            overflow-y: auto;
-            transition: transform 0.3s ease;
         }
 
-        .staffbar img {
-            width: 80px;
-            margin-bottom: 24px;
-            align-self: center;
-        }
-
-        .staffbar a {
-            color: #FEFDF1;
-            text-decoration: none;
-            padding: 10px 12px;
-            border-radius: 6px;
-            width: 100%;
-            margin-bottom: 4px;
-            font-size: 14px;
-            display: block;
-            transition: background 0.2s;
-        }
-
-        .staffbar a:hover,
-        .staffbar a.active { background: rgba(255,255,255,0.15); }
-
-        /* Mobile hamburger */
-        .hamburger {
+        /* ===== MOBILE TOP BAR ===== */
+        .topbar {
             display: none;
             position: fixed;
-            top: 12px; left: 12px;
+            top: 0; left: 0; right: 0;
+            height: 56px;
+            background: var(--red);
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
             z-index: 200;
-            background: #753B2F;
+            box-shadow: 0 2px 8px rgba(0,0,0,.2);
+        }
+        .topbar .logo-small {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .topbar .logo-small img {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,.4);
+        }
+        .topbar .logo-small span {
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            letter-spacing: .3px;
+        }
+        .hamburger {
+            background: none;
             border: none;
-            border-radius: 6px;
-            padding: 8px 10px;
             cursor: pointer;
+            padding: 6px;
+            display: flex;
             flex-direction: column;
             gap: 5px;
         }
-
         .hamburger span {
             display: block;
             width: 22px; height: 2px;
-            background: #FEFDF1;
+            background: #fff;
             border-radius: 2px;
-            transition: all 0.3s;
+            transition: all .25s;
+        }
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: var(--sidebar-w);
+            min-height: 100vh;
+            background: var(--red);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 32px 0 24px;
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            z-index: 100;
+            transition: transform .3s cubic-bezier(.4,0,.2,1);
+        }
+        .sidebar img {
+            width: 90px; height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(255,255,255,.3);
+            margin-bottom: 28px;
+        }
+        .sidebar-nav {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 0 12px;
+        }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 16px;
+            border-radius: var(--radius);
+            color: rgba(255,255,255,.75);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: background .2s, color .2s;
+        }
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255,255,255,.15);
+            color: #fff;
+        }
+        .nav-link .nav-num {
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .sidebar-logout {
+            margin-top: auto;
+            padding: 0 12px;
+            width: 100%;
+        }
+        .sidebar-logout a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: var(--radius);
+            color: rgba(255,255,255,.65);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background .2s, color .2s;
+        }
+        .sidebar-logout a:hover {
+            background: rgba(255,255,255,.12);
+            color: #fff;
         }
 
+        /* Overlay for mobile */
         .sidebar-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.4);
-            z-index: 90;
+            background: rgba(0,0,0,.45);
+            z-index: 99;
         }
 
-        /* ── Main content ── */
-        .staff-content {
-            margin-left: 220px;
-            padding: 24px;
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            margin-left: var(--sidebar-w);
             flex: 1;
+            padding: 40px;
             min-width: 0;
         }
 
-        /* ── Sections ── */
-        .staff { display: none; }
-        .staff.active { display: block; }
+        /* ===== SECTIONS ===== */
+        .page-content { display: none; }
+        .page-content.active { display: block; }
 
-        .staff h1 {
-            font-size: clamp(20px, 4vw, 28px);
-            color: #753B2F;
-            margin-bottom: 20px;
+        /* ===== SECTION TITLE ===== */
+        .page-content > h1 {
+            font-size: clamp(20px, 4vw, 26px);
+            font-weight: 600;
+            color: var(--red-dark);
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border);
+        }
+        .page-content h3.section-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            margin: 28px 0 14px;
         }
 
-        /* ── Welcome card ── */
-        .welcome-card {
-            background: #f4f194;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
+        /* ===== ACCOUNT / WELCOME CARD ===== */
+        .account-card {
+            background: var(--yellow);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+        .account-card h3 {
+            font-size: 18px;
+            color: var(--red-dark);
+            margin: 0 0 16px;
+            font-weight: 600;
+        }
+        .account-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px 24px;
+        }
+        .account-field {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .account-field span:first-child {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .7px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+        .account-field span:last-child {
+            font-size: 15px;
+            font-weight: 500;
         }
 
-        /* ── Stats grid ── */
+        /* ===== STATS GRID ===== */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 16px;
-            margin-top: 24px;
+            margin-top: 20px;
         }
-
         .stat-card {
-            background: #FEFDF1;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
             padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #e0dfc0;
+            box-shadow: var(--shadow);
+        }
+        .stat-card span {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .7px;
+            color: var(--muted);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .stat-card strong {
+            display: block;
+            font-size: 36px;
+            font-weight: 600;
+            color: var(--red);
+            line-height: 1;
         }
 
-        .stat-card h4 { font-size: 13px; color: #666; margin-bottom: 8px; }
-        .stat-card h2 { font-size: 32px; color: #753B2F; }
-
-        /* ── Alerts ── */
+        /* ===== ALERT ===== */
         .alert-success {
-            background: #d4edda;
-            color: #155724;
-            padding: 12px 16px;
-            border-radius: 6px;
-            margin-bottom: 16px;
+            background: #edfaed;
+            color: #1a6b1a;
+            border: 1px solid #b6e6b6;
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
             font-size: 14px;
         }
 
-        /* ── Buttons ── */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 9px 16px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: opacity 0.2s;
-        }
-        .btn:hover { opacity: 0.85; }
-        .btn-primary { background: #753B2F; color: #FEFDF1; }
-        .btn-secondary { background: #28aacc; color: white; }
-        .btn-success  { background: #28a745; color: white; }
-        .btn-warning  { background: #ffc107; color: #333; }
-        .btn-cancel   { background: #ccc; color: #333; }
-
+        /* ===== BUTTON ROW ===== */
         .btn-row {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 16px;
         }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: var(--font);
+            font-size: 14px;
+            font-weight: 500;
+            transition: opacity .2s, transform .1s;
+        }
+        .btn:hover  { opacity: .85; }
+        .btn:active { transform: scale(.98); }
+        .btn-primary   { background: var(--red);  color: #fff; }
+        .btn-secondary { background: #28aacc;      color: #fff; }
+        .btn-success   { background: #28a745;      color: #fff; }
+        .btn-warning   { background: #ffc107;      color: #333; }
+        .btn-cancel    { background: #ddd;         color: #333; }
 
-        /* ── Table wrapper (horizontal scroll on mobile) ── */
+        /* ===== TABLE ===== */
         .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-
         table {
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
             min-width: 600px;
         }
-
-        thead { background: #753B2F; color: #FEFDF1; }
-        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eee; }
-        tbody tr:hover { background: #fafaf0; }
+        thead { background: var(--red); color: #fff; }
+        th, td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+        tbody tr:hover { background: #faf8f0; }
 
         .badge-blood {
-            background: #753B2F;
-            color: #FEFDF1;
+            background: var(--red);
+            color: #fff;
             padding: 2px 8px;
             border-radius: 4px;
             font-size: 12px;
             white-space: nowrap;
+            font-weight: 600;
         }
+        .status-pending  { color: #856404; background: #fff3cd; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+        .status-approved { color: #155724; background: #d4edda; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+        .status-rejected { color: #721c24; background: #f8d7da; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
 
-        /* ── Status badges ── */
-        .status-pending  { color: #856404; background: #fff3cd; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
-        .status-approved { color: #155724; background: #d4edda; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
-        .status-rejected { color: #721c24; background: #f8d7da; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
-
-        /* ── Forms ── */
+        /* ===== FORMS ===== */
         .form-panel {
-            background: #f4f194;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            background: var(--yellow);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
             display: none;
+            box-shadow: var(--shadow);
         }
-
-        .form-panel h3 { margin-top: 0; margin-bottom: 16px; color: #333; }
-
+        .form-panel h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--red-dark);
+            margin: 0 0 20px;
+        }
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 20px;
         }
-
-        .form-group { display: flex; flex-direction: column; gap: 6px; }
-
-        label { font-size: 13px; font-weight: 600; color: #444; }
-
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 5px;
+        }
         input[type="text"],
         input[type="number"],
         input[type="date"],
+        input[type="tel"],
+        input[type="email"],
         select,
         textarea {
             width: 100%;
-            padding: 9px 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            padding: 11px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-family: var(--font);
             font-size: 14px;
             background: #fff;
+            color: var(--text);
+            transition: border-color .2s, box-shadow .2s;
+            -webkit-appearance: none;
+            appearance: none;
         }
-
         input:focus, select:focus, textarea:focus {
-            outline: 2px solid #753B2F;
-            border-color: transparent;
+            outline: none;
+            border-color: var(--red);
+            box-shadow: 0 0 0 3px rgba(117,59,47,.12);
         }
+        textarea { min-height: 100px; resize: vertical; }
 
-        /* Notify form full-width fields */
-        .notify-form .form-group { margin-bottom: 14px; }
-        .notify-form textarea { min-height: 100px; resize: vertical; }
-
-        /* ── Responsive breakpoints ── */
-
-        /* Tablet */
-        @media (max-width: 900px) {
-            .staff-content { padding: 16px; }
+        /* Notify form */
+        .notify-form {
+            background: var(--yellow);
+            padding: 24px;
+            border-radius: var(--radius);
+            max-width: 520px;
+            box-shadow: var(--shadow);
         }
+        .notify-form .form-group { margin-bottom: 16px; }
 
-        /* Mobile */
-        @media (max-width: 640px) {
-            .hamburger { display: flex; }
+        form button[type="submit"].btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: var(--red);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .2s, transform .1s;
+            margin-top: 8px;
+            letter-spacing: .3px;
+        }
+        form button[type="submit"].btn-submit:hover  { background: var(--red-dark); }
+        form button[type="submit"].btn-submit:active { transform: scale(.99); }
 
-            .staffbar {
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .topbar { display: flex; }
+            body { padding-top: 56px; }
+
+            .sidebar {
                 transform: translateX(-100%);
-                width: 260px;
+                top: 56px;
+                padding-top: 20px;
             }
-
-            .staffbar.open { transform: translateX(0); }
+            .sidebar.open { transform: translateX(0); }
             .sidebar-overlay.open { display: block; }
 
-            .staff-content {
+            .main-content {
                 margin-left: 0;
-                padding: 60px 14px 20px;
+                padding: 24px 16px 40px;
             }
-
-            .form-grid { grid-template-columns: 1fr; }
-
-            .stats-grid { grid-template-columns: 1fr 1fr; }
-
-            .btn { font-size: 13px; padding: 8px 12px; }
-
-            table { font-size: 12px; }
-            th, td { padding: 8px 10px; }
+            .account-grid { grid-template-columns: 1fr; gap: 10px; }
+            .form-grid    { grid-template-columns: 1fr; }
+            .stats-grid   { grid-template-columns: 1fr 1fr; }
         }
 
-        @media (max-width: 380px) {
-            .stats-grid { grid-template-columns: 1fr; }
+        @media (max-width: 480px) {
+            .main-content { padding: 20px 12px 40px; }
+            .stats-grid   { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Hamburger (mobile only) -->
-    <button class="hamburger" id="hamburger" aria-label="Open menu">
-        <span></span><span></span><span></span>
-    </button>
-
-    <!-- Overlay (mobile only) -->
-    <div class="sidebar-overlay" id="sidebar-overlay"></div>
-
-    <!-- Staff Sidebar -->
-    <div class="staffbar" id="staffbar">
-        <img src="{{ asset('images/MORO.jpg') }}" alt="MORO Logo">
-        <a href="#" onclick="showSection('staffaccount')" class="nav-link">1 Staff Account</a>
-        <a href="#" onclick="showSection('donationdb')" class="nav-link">2 Donation DB</a>
-        <a href="#" onclick="showSection('requestdb')" class="nav-link">3 Request DB</a>
-        <a href="#" onclick="showSection('notify')" class="nav-link">4 Notify</a>
-        <a href="#" onclick="showSection('unit')" class="nav-link">5 Blood Units</a>
-        <a href="{{ route('staff.logout') }}"
-           onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-           style="margin-top: auto; color: #f8c4b4;">
-            Logout
-        </a>
-        <form id="logout-form" action="{{ route('staff.logout') }}" method="POST" style="display: none;">
-            @csrf
-        </form>
+    <!-- ===== MOBILE TOP BAR ===== -->
+    <div class="topbar">
+        <div class="logo-small">
+            <img src="{{ asset('images/MORO.jpg') }}" alt="MORO Logo">
+            <span>Staff Portal</span>
+        </div>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
     </div>
 
-    <!-- Main Content -->
-    <div class="staff-content">
+    <!-- Sidebar overlay (mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ===== SIDEBAR ===== -->
+    <div class="sidebar" id="sidebar">
+        <img src="{{ asset('images/MORO.jpg') }}" alt="MORO Logo">
+
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-link active" data-section="staffaccount">
+                <span class="nav-num">1</span> Staff Account
+            </a>
+            <a href="#" class="nav-link" data-section="donationdb">
+                <span class="nav-num">2</span> Donation DB
+            </a>
+            <a href="#" class="nav-link" data-section="requestdb">
+                <span class="nav-num">3</span> Request DB
+            </a>
+            <a href="#" class="nav-link" data-section="notify">
+                <span class="nav-num">4</span> Notify
+            </a>
+            <a href="#" class="nav-link" data-section="unit">
+                <span class="nav-num">5</span> Blood Units
+            </a>
+        </nav>
+
+        <div class="sidebar-logout">
+            <a href="{{ route('staff.logout') }}"
+               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                &#x2192; Logout
+            </a>
+            <form id="logout-form" action="{{ route('staff.logout') }}" method="POST" style="display:none;">
+                @csrf
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="main-content">
 
         <!-- ── 1. Staff Account ── -->
-        <section id="staffaccount" class="staff active">
+        <section id="staffaccount" class="page-content active">
             <h1>Staff Account Dashboard</h1>
 
-            <div class="welcome-card">
+            <div class="account-card">
                 <h3>Welcome, {{ auth()->user()->name }}!</h3>
-                <p><strong>Email:</strong> {{ auth()->user()->email }}</p>
-                <p><strong>Age:</strong> {{ auth()->user()->age }} years</p>
+                <div class="account-grid">
+                    <div class="account-field">
+                        <span>Email</span>
+                        <span>{{ auth()->user()->email }}</span>
+                    </div>
+                    <div class="account-field">
+                        <span>Age</span>
+                        <span>{{ auth()->user()->age }} years</span>
+                    </div>
+                </div>
             </div>
 
             <div class="stats-grid">
                 <div class="stat-card">
-                    <h4>Total Donations</h4>
-                    <h2>{{ $stats['total_donations'] ?? 0 }}</h2>
+                    <span>Total Donations</span>
+                    <strong>{{ $stats['total_donations'] ?? 0 }}</strong>
                 </div>
                 <div class="stat-card">
-                    <h4>Total Requests</h4>
-                    <h2>{{ $stats['total_requests'] ?? 0 }}</h2>
+                    <span>Total Requests</span>
+                    <strong>{{ $stats['total_requests'] ?? 0 }}</strong>
                 </div>
             </div>
         </section>
 
         <!-- ── 2. Donation Database ── -->
-        <section id="donationdb" class="staff">
+        <section id="donationdb" class="page-content">
             <h1>Donation Database</h1>
 
             <div class="btn-row">
-                <button class="btn btn-secondary" onclick="refreshTable('donations')">&#x21BB; Refresh</button>
+                <button class="btn btn-secondary" onclick="location.reload()">&#x21BB; Refresh</button>
             </div>
 
             @if (session('donation-updated'))
@@ -374,7 +571,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="13" style="text-align:center;padding:40px;">No donations yet</td></tr>
+                            <tr><td colspan="13" style="text-align:center;padding:40px;color:var(--muted);">No donations yet</td></tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -382,11 +579,11 @@
         </section>
 
         <!-- ── 3. Request Database ── -->
-        <section id="requestdb" class="staff">
+        <section id="requestdb" class="page-content">
             <h1>Request Database</h1>
 
             <div class="btn-row">
-                <button class="btn btn-secondary" onclick="refreshTable('requests')">&#x21BB; Refresh</button>
+                <button class="btn btn-secondary" onclick="location.reload()">&#x21BB; Refresh</button>
             </div>
 
             @if (session('request-updated'))
@@ -429,7 +626,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="14" style="text-align:center;padding:40px;">No requests yet</td></tr>
+                            <tr><td colspan="14" style="text-align:center;padding:40px;color:var(--muted);">No requests yet</td></tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -437,16 +634,14 @@
         </section>
 
         <!-- ── 4. Notifications ── -->
-        <section id="notify" class="staff">
+        <section id="notify" class="page-content">
             <h1>Send Notifications</h1>
 
             @if (session('notification-sent'))
                 <div class="alert-success">&#10003; Notification sent successfully!</div>
             @endif
 
-            <form action="{{ route('staff.notify.send') }}" method="POST"
-                  class="notify-form"
-                  style="background:#f4f194; padding:20px; border-radius:8px; max-width:520px;">
+            <form action="{{ route('staff.notify.send') }}" method="POST" class="notify-form">
                 @csrf
 
                 <div class="form-group">
@@ -473,12 +668,10 @@
                     </select>
                 </div>
 
-                <div style="margin-top:16px;">
-                    <button type="submit" class="btn btn-primary">&#128231; Send Notification</button>
-                </div>
+                <button type="submit" class="btn-submit">&#128231; Send Notification</button>
             </form>
 
-            <h3 style="margin-top:36px; margin-bottom:12px;">Recent Notifications</h3>
+            <h3 class="section-label" style="margin-top:36px;">Recent Notifications</h3>
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -493,7 +686,7 @@
                                 <td><span class="status-approved">Sent</span></td>
                             </tr>
                         @empty
-                            <tr><td colspan="4" style="padding:20px;">No notifications sent yet</td></tr>
+                            <tr><td colspan="4" style="padding:24px;color:var(--muted);">No notifications sent yet</td></tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -501,12 +694,12 @@
         </section>
 
         <!-- ── 5. Blood Units ── -->
-        <section id="unit" class="staff">
+        <section id="unit" class="page-content">
             <h1>Blood Unit Management</h1>
 
             <div class="btn-row">
                 <button class="btn btn-success" onclick="showForm('create-unit')">&#43; Create Unit</button>
-                <button class="btn btn-secondary" onclick="refreshTable('units')">&#x21BB; Refresh</button>
+                <button class="btn btn-secondary" onclick="location.reload()">&#x21BB; Refresh</button>
             </div>
 
             @if (session('unit-created'))
@@ -535,12 +728,12 @@
                             <label>Volume (ml)</label>
                             <input type="number" name="volume" min="350" max="500" value="450" required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="grid-column: 1 / -1;">
                             <label>Expiry Date</label>
                             <input type="date" name="expiry_date" required>
                         </div>
                     </div>
-                    <div class="btn-row" style="margin-top:16px;">
+                    <div class="btn-row" style="margin-top:8px;">
                         <button type="submit" class="btn btn-primary">&#128137; Register Unit</button>
                         <button type="button" class="btn btn-cancel" onclick="hideForm('create-unit')">Cancel</button>
                     </div>
@@ -570,12 +763,12 @@
                             <label>Volume (ml)</label>
                             <input type="number" name="volume" id="edit-volume" min="350" max="500" required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="grid-column: 1 / -1;">
                             <label>Expiry Date</label>
                             <input type="date" name="expiry_date" id="edit-expiry-date" required>
                         </div>
                     </div>
-                    <div class="btn-row" style="margin-top:16px;">
+                    <div class="btn-row" style="margin-top:8px;">
                         <button type="submit" class="btn btn-primary">&#128190; Save Changes</button>
                         <button type="button" class="btn btn-cancel"
                                 onclick="document.getElementById('edit-unit-form').style.display='none'">Cancel</button>
@@ -597,7 +790,7 @@
                             <tr>
                                 <td>#{{ $unit->id }}</td>
                                 <td>{{ $unit->donation_id }}</td>
-                                <td><strong>{{ $unit->blood_type }}</strong></td>
+                                <td><span class="badge-blood">{{ $unit->blood_type }}</span></td>
                                 <td>{{ $unit->request_id ?? '-' }}</td>
                                 <td>{{ $unit->volume }}ml</td>
                                 <td style="color: {{ $unit->expiry_date < now() ? '#dc3545' : '#28a745' }}; font-weight:500;">
@@ -608,101 +801,114 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="7" style="text-align:center;padding:40px;">No blood units registered</td></tr>
+                            <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted);">No blood units registered</td></tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
         </section>
 
-    </div><!-- /.staff-content -->
+    </div><!-- /.main-content -->
 
     <script>
-    'use strict';
+    (function () {
+        'use strict';
 
-    const sections  = document.querySelectorAll('.staff');
-    const navLinks  = document.querySelectorAll('.staffbar a[href="#"]');
-    const bloodUnits = @json($blood_units);
+        const sections = document.querySelectorAll('.page-content');
+        const navLinks  = document.querySelectorAll('.sidebar .nav-link');
+        const bloodUnits = @json($blood_units);
 
-    /* ── Sidebar toggle (mobile) ── */
-    const hamburger = document.getElementById('hamburger');
-    const staffbar  = document.getElementById('staffbar');
-    const overlay   = document.getElementById('sidebar-overlay');
+        // ===== SECTION SWITCHING =====
+        function showSection(id) {
+            sections.forEach(s => s.classList.remove('active'));
+            navLinks.forEach(l => l.classList.remove('active'));
 
-    function openSidebar()  { staffbar.classList.add('open'); overlay.classList.add('open'); }
-    function closeSidebar() { staffbar.classList.remove('open'); overlay.classList.remove('open'); }
+            const target = document.getElementById(id);
+            if (target) target.classList.add('active');
 
-    hamburger.addEventListener('click', () =>
-        staffbar.classList.contains('open') ? closeSidebar() : openSidebar()
-    );
-    overlay.addEventListener('click', closeSidebar);
+            const activeLink = document.querySelector(`.nav-link[data-section="${id}"]`);
+            if (activeLink) activeLink.classList.add('active');
 
-    /* ── Section switching ── */
-    function showSection(sectionId) {
-        sections.forEach(s => s.classList.remove('active'));
-
-        const target = document.getElementById(sectionId);
-        if (target) {
-            target.classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        navLinks.forEach(l => l.classList.remove('active'));
-
-        const activeLink = [...navLinks].find(l =>
-            l.getAttribute('onclick')?.includes(`'${sectionId}'`)
-        );
-        if (activeLink) activeLink.classList.add('active');
-
-        closeSidebar();
-    }
-
-    /* ── Form helpers ── */
-    function showForm(id) { document.getElementById(id + '-form').style.display = 'block'; }
-    function hideForm(id) { document.getElementById(id + '-form').style.display = 'none'; }
-
-    /* ── Edit unit ── */
-    function editUnit(id) {
-        const unit = bloodUnits.find(u => u.id === id);
-        if (!unit) return alert('Unit not found.');
-
-        document.getElementById('edit-donation-id').value = unit.donation_id;
-        document.getElementById('edit-blood-type').value  = unit.blood_type;
-        document.getElementById('edit-request-id').value  = unit.request_id ?? '';
-        document.getElementById('edit-volume').value      = unit.volume;
-        document.getElementById('edit-expiry-date').value = unit.expiry_date?.split('T')[0] ?? '';
-
-        document.getElementById('edit-unit-form-tag').action = `/staff/unit/${id}`;
-        document.getElementById('edit-unit-form').style.display = 'block';
-        document.getElementById('edit-unit-form').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    /* ── Refresh ── */
-    function refreshTable() { location.reload(); }
-
-    /* ── Nav click listeners ── */
-    navLinks.forEach(link => {
-        link.addEventListener('click', function (e) {
-            e.preventDefault();
-            const match = this.getAttribute('onclick')?.match(/'([^']+)'/);
-            if (match) showSection(match[1]);
+        navLinks.forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                showSection(this.dataset.section);
+                closeSidebar();
+            });
         });
-    });
 
-    /* ── Keyboard shortcuts ── */
-    document.addEventListener('keydown', e => {
-        const map = { '1': 'staffaccount', '2': 'donationdb', '3': 'requestdb', '4': 'notify', '5': 'unit' };
-        if (map[e.key] && document.activeElement.tagName !== 'INPUT') showSection(map[e.key]);
-    });
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function (e) {
+            if (['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) return;
+            const map = { '1':'staffaccount', '2':'donationdb', '3':'requestdb', '4':'notify', '5':'unit' };
+            if (map[e.key]) showSection(map[e.key]);
+        });
 
-    /* ── Hash navigation ── */
-    window.addEventListener('hashchange', () => {
-        const hash = window.location.hash.replace('#', '');
-        if (hash && document.getElementById(hash)) showSection(hash);
-    });
+        // Hash routing
+        function handleHash() {
+            const hash = window.location.hash.replace('#', '');
+            if (hash && document.getElementById(hash)) { showSection(hash); return true; }
+            return false;
+        }
+        window.addEventListener('hashchange', handleHash);
+        window.addEventListener('load', () => { handleHash() || showSection('staffaccount'); });
 
-    /* ── Initial load ── */
-    window.addEventListener('load', () => showSection('staffaccount'));
+        // ===== MOBILE HAMBURGER =====
+        const hamburger = document.getElementById('hamburgerBtn');
+        const sidebar    = document.getElementById('sidebar');
+        const overlay    = document.getElementById('sidebarOverlay');
+
+        function openSidebar() {
+            sidebar.classList.add('open');
+            overlay.classList.add('open');
+            hamburger.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+            hamburger.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        hamburger.addEventListener('click', () =>
+            sidebar.classList.contains('open') ? closeSidebar() : openSidebar()
+        );
+        overlay.addEventListener('click', closeSidebar);
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+
+        // ===== FORM HELPERS =====
+        window.showForm = function(id) { document.getElementById(id + '-form').style.display = 'block'; };
+        window.hideForm = function(id) { document.getElementById(id + '-form').style.display = 'none'; };
+
+        // ===== EDIT UNIT =====
+        window.editUnit = function(id) {
+            const unit = bloodUnits.find(u => u.id === id);
+            if (!unit) return alert('Unit not found.');
+
+            document.getElementById('edit-donation-id').value = unit.donation_id;
+            document.getElementById('edit-blood-type').value  = unit.blood_type;
+            document.getElementById('edit-request-id').value  = unit.request_id ?? '';
+            document.getElementById('edit-volume').value      = unit.volume;
+            document.getElementById('edit-expiry-date').value = unit.expiry_date?.split('T')[0] ?? '';
+
+            document.getElementById('edit-unit-form-tag').action = `/staff/unit/${id}`;
+            document.getElementById('edit-unit-form').style.display = 'block';
+            document.getElementById('edit-unit-form').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        // ===== SUBMIT FEEDBACK =====
+        document.querySelectorAll('form button[type="submit"]').forEach(btn => {
+            btn.closest('form')?.addEventListener('submit', () => {
+                btn.textContent = 'Submitting…';
+                btn.disabled = true;
+            });
+        });
+
+    })();
     </script>
 </body>
 </html>
