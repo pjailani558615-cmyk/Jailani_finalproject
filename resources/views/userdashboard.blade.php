@@ -179,7 +179,7 @@
             margin-left: var(--sidebar-w);
             flex: 1;
             padding: 40px 40px 40px 20px;
-            max-width: 820px;
+            min-width: 0;
         }
 
         /* ===== SECTIONS ===== */
