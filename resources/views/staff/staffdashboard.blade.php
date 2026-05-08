@@ -332,6 +332,58 @@
         .status-approved { color: #155724; background: #d4edda; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
         .status-rejected { color: #721c24; background: #f8d7da; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
 
+        /* ===== PAGINATION ===== */
+        .pagination-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+        }
+        .pagination-info {
+            font-size: 13px;
+            color: var(--muted);
+        }
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .pg-btn {
+            min-width: 34px;
+            height: 34px;
+            padding: 0 8px;
+            border: 1.5px solid var(--border);
+            border-radius: 6px;
+            background: #fff;
+            color: var(--text);
+            font-family: var(--font);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background .18s, border-color .18s, color .18s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pg-btn:hover:not(:disabled) {
+            background: var(--yellow);
+            border-color: var(--red);
+            color: var(--red-dark);
+        }
+        .pg-btn.active {
+            background: var(--red);
+            border-color: var(--red);
+            color: #fff;
+        }
+        .pg-btn:disabled {
+            opacity: .4;
+            cursor: not-allowed;
+        }
+
         /* ===== FORMS ===== */
         .form-panel {
             background: var(--yellow);
@@ -541,7 +593,7 @@
             @endif
 
             <div class="table-wrap">
-                <table>
+                <table id="donation-table">
                     <thead>
                         <tr>
                             <th>ID</th><th>User ID</th><th>Name</th><th>Sex</th><th>Age</th>
@@ -549,7 +601,7 @@
                             <th>Weight</th><th>Last Donation</th><th>Disease?</th><th>Status</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="donation-tbody">
                         @forelse($donations as $donation)
                             <tr>
                                 <td>{{ $donation->id }}</td>
@@ -576,6 +628,11 @@
                     </tbody>
                 </table>
             </div>
+            <!-- Donation Pagination -->
+            <div class="pagination-bar" id="donation-pagination-bar">
+                <span class="pagination-info" id="donation-pagination-info"></span>
+                <div class="pagination-controls" id="donation-pagination-controls"></div>
+            </div>
         </section>
 
         <!-- ── 3. Request Database ── -->
@@ -591,7 +648,7 @@
             @endif
 
             <div class="table-wrap">
-                <table>
+                <table id="request-table">
                     <thead>
                         <tr>
                             <th>ID</th><th>User ID</th><th>Type</th><th>Patient</th><th>Age</th><th>Sex</th>
@@ -599,7 +656,7 @@
                             <th>Urgency</th><th>Date/Time</th><th>Status</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="request-tbody">
                         @forelse($requests as $request)
                             <tr>
                                 <td>{{ $request->id }}</td>
@@ -630,6 +687,11 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+            <!-- Request Pagination -->
+            <div class="pagination-bar" id="request-pagination-bar">
+                <span class="pagination-info" id="request-pagination-info"></span>
+                <div class="pagination-controls" id="request-pagination-controls"></div>
             </div>
         </section>
 
@@ -673,11 +735,11 @@
 
             <h3 class="section-label" style="margin-top:36px;">Recent Notifications</h3>
             <div class="table-wrap">
-                <table>
+                <table id="notify-table">
                     <thead>
                         <tr><th>Date</th><th>Recipient</th><th>Subject</th><th>Status</th></tr>
                     </thead>
-                    <tbody>
+                    <tbody id="notify-tbody">
                         @forelse($recent_notifications as $notification)
                             <tr>
                                 <td>{{ $notification->created_at->format('M d, H:i') }}</td>
@@ -690,6 +752,11 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+            <!-- Notify Pagination -->
+            <div class="pagination-bar" id="notify-pagination-bar">
+                <span class="pagination-info" id="notify-pagination-info"></span>
+                <div class="pagination-controls" id="notify-pagination-controls"></div>
             </div>
         </section>
 
@@ -778,14 +845,14 @@
 
             <!-- Blood Units Table -->
             <div class="table-wrap">
-                <table>
+                <table id="unit-table">
                     <thead>
                         <tr>
                             <th>Unit ID</th><th>Donation ID</th><th>Blood Type</th>
                             <th>Request ID</th><th>Volume</th><th>Expires</th><th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="unit-tbody">
                         @forelse($blood_units as $unit)
                             <tr>
                                 <td>#{{ $unit->id }}</td>
@@ -805,6 +872,11 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+            <!-- Unit Pagination -->
+            <div class="pagination-bar" id="unit-pagination-bar">
+                <span class="pagination-info" id="unit-pagination-info"></span>
+                <div class="pagination-controls" id="unit-pagination-controls"></div>
             </div>
         </section>
 
@@ -907,6 +979,116 @@
                 btn.disabled = true;
             });
         });
+
+        // ===== PAGINATION ENGINE =====
+        const ROWS_PER_PAGE = 8;
+
+        /**
+         * Sets up client-side pagination for a table tbody.
+         * @param {string} tbodyId       - ID of the <tbody> element
+         * @param {string} infoId        - ID of the info <span>
+         * @param {string} controlsId    - ID of the controls container
+         */
+        function initPagination(tbodyId, infoId, controlsId) {
+            const tbody    = document.getElementById(tbodyId);
+            const infoEl   = document.getElementById(infoId);
+            const ctrlEl   = document.getElementById(controlsId);
+
+            if (!tbody || !infoEl || !ctrlEl) return;
+
+            // Collect all data rows (exclude empty-state colspan rows)
+            const allRows = Array.from(tbody.querySelectorAll('tr'));
+
+            // If there's only one row and it spans all columns (empty state), hide pagination bar
+            if (allRows.length === 1 && allRows[0].querySelector('td[colspan]')) {
+                const bar = ctrlEl.closest('.pagination-bar');
+                if (bar) bar.style.display = 'none';
+                return;
+            }
+
+            // Also hide if 8 or fewer rows — no pagination needed
+            if (allRows.length <= ROWS_PER_PAGE) {
+                const bar = ctrlEl.closest('.pagination-bar');
+                if (bar) bar.style.display = 'none';
+                return;
+            }
+
+            const totalRows  = allRows.length;
+            const totalPages = Math.ceil(totalRows / ROWS_PER_PAGE);
+            let currentPage  = 1;
+
+            function render(page) {
+                currentPage = page;
+                const start = (page - 1) * ROWS_PER_PAGE;
+                const end   = start + ROWS_PER_PAGE;
+
+                allRows.forEach((row, i) => {
+                    row.style.display = (i >= start && i < end) ? '' : 'none';
+                });
+
+                // Info text
+                const displayEnd = Math.min(end, totalRows);
+                infoEl.textContent = `Showing ${start + 1}–${displayEnd} of ${totalRows} rows`;
+
+                // Rebuild controls
+                ctrlEl.innerHTML = '';
+
+                // Prev button
+                const prevBtn = createPgBtn('&#8592;', page === 1, () => render(page - 1));
+                ctrlEl.appendChild(prevBtn);
+
+                // Page number buttons (show max 5 around current)
+                const range = pageRange(currentPage, totalPages);
+                let lastNum = 0;
+                range.forEach(num => {
+                    if (num - lastNum > 1) {
+                        // Ellipsis
+                        const ellipsis = document.createElement('span');
+                        ellipsis.textContent = '…';
+                        ellipsis.style.cssText = 'padding:0 6px;color:var(--muted);font-size:13px;align-self:center;';
+                        ctrlEl.appendChild(ellipsis);
+                    }
+                    const pgBtn = createPgBtn(num, false, () => render(num));
+                    if (num === currentPage) pgBtn.classList.add('active');
+                    ctrlEl.appendChild(pgBtn);
+                    lastNum = num;
+                });
+
+                // Next button
+                const nextBtn = createPgBtn('&#8594;', page === totalPages, () => render(page + 1));
+                ctrlEl.appendChild(nextBtn);
+            }
+
+            function createPgBtn(label, disabled, onClick) {
+                const btn = document.createElement('button');
+                btn.className = 'pg-btn';
+                btn.innerHTML = label;
+                btn.disabled  = disabled;
+                if (!disabled) btn.addEventListener('click', onClick);
+                return btn;
+            }
+
+            function pageRange(current, total) {
+                // Always show first, last, current, and 1 neighbor on each side
+                const delta = 1;
+                const range = new Set();
+                range.add(1);
+                range.add(total);
+                for (let i = Math.max(2, current - delta); i <= Math.min(total - 1, current + delta); i++) {
+                    range.add(i);
+                }
+                return Array.from(range).sort((a, b) => a - b);
+            }
+
+            // Initial render
+            render(1);
+        }
+
+        // Init pagination for each table
+        initPagination('donation-tbody', 'donation-pagination-info', 'donation-pagination-controls');
+        initPagination('request-tbody',  'request-pagination-info',  'request-pagination-controls');
+        initPagination('notify-tbody',   'notify-pagination-info',   'notify-pagination-controls');
+        initPagination('unit-tbody',     'unit-pagination-info',     'unit-pagination-controls');
 
     })();
     </script>

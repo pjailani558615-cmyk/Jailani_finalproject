@@ -289,6 +289,59 @@
             font-weight: 600;
         }
 
+        /* ===== PAGINATION ===== */
+        .pagination-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+            margin-bottom: 8px;
+        }
+        .pagination-info {
+            font-size: 13px;
+            color: var(--muted);
+        }
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .pg-btn {
+            min-width: 34px;
+            height: 34px;
+            padding: 0 8px;
+            border: 1.5px solid var(--border);
+            border-radius: 6px;
+            background: #fff;
+            color: var(--text);
+            font-family: var(--font);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background .18s, border-color .18s, color .18s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pg-btn:hover:not(:disabled) {
+            background: var(--yellow);
+            border-color: var(--red);
+            color: var(--red-dark);
+        }
+        .pg-btn.active {
+            background: var(--red);
+            border-color: var(--red);
+            color: #fff;
+        }
+        .pg-btn:disabled {
+            opacity: .4;
+            cursor: not-allowed;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .topbar { display: flex; }
@@ -409,7 +462,7 @@
                             <th>Role</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="users-tbody">
                         @foreach ($users as $user)
                             <tr>
                                 <td>{{ $user->id }}</td>
@@ -423,6 +476,10 @@
                         @endforeach
                     </tbody>
                 </table>
+            </div>
+            <div class="pagination-bar" id="users-pagination-bar">
+                <span class="pagination-info" id="users-pagination-info"></span>
+                <div class="pagination-controls" id="users-pagination-controls"></div>
             </div>
 
             <!-- Donors -->
@@ -445,7 +502,7 @@
                             <th>Disease?</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="donors-tbody">
                         @foreach ($donors as $donor)
                             <tr>
                                 <td>{{ $donor->id }}</td>
@@ -464,6 +521,10 @@
                         @endforeach
                     </tbody>
                 </table>
+            </div>
+            <div class="pagination-bar" id="donors-pagination-bar">
+                <span class="pagination-info" id="donors-pagination-info"></span>
+                <div class="pagination-controls" id="donors-pagination-controls"></div>
             </div>
 
             <!-- Requestors -->
@@ -487,7 +548,7 @@
                             <th>Date &amp; Time</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="requestors-tbody">
                         @foreach ($requestors as $requestor)
                             <tr>
                                 <td>{{ $requestor->id }}</td>
@@ -512,6 +573,10 @@
                     </tbody>
                 </table>
             </div>
+            <div class="pagination-bar" id="requestors-pagination-bar">
+                <span class="pagination-info" id="requestors-pagination-info"></span>
+                <div class="pagination-controls" id="requestors-pagination-controls"></div>
+            </div>
 
             <!-- Blood Units -->
             <h3 class="section-label">Blood Units</h3>
@@ -526,7 +591,7 @@
                             <th>Expiry Date</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="bloodunits-tbody">
                         @foreach ($bloodUnits as $unit)
                             <tr>
                                 <td>#{{ $unit->id }}</td>
@@ -541,6 +606,11 @@
                     </tbody>
                 </table>
             </div>
+            <div class="pagination-bar" id="bloodunits-pagination-bar">
+                <span class="pagination-info" id="bloodunits-pagination-info"></span>
+                <div class="pagination-controls" id="bloodunits-pagination-controls"></div>
+            </div>
+
         </section>
 
     </div><!-- /.main-content -->
@@ -613,6 +683,109 @@
         );
         overlay.addEventListener('click', closeSidebar);
         document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+
+        // ===== PAGINATION ENGINE =====
+        const ROWS_PER_PAGE = 8;
+
+        /**
+         * Sets up client-side pagination for a table tbody.
+         * @param {string} tbodyId    - ID of the <tbody> element
+         * @param {string} infoId     - ID of the info <span>
+         * @param {string} controlsId - ID of the controls container
+         */
+        function initPagination(tbodyId, infoId, controlsId) {
+            const tbody  = document.getElementById(tbodyId);
+            const infoEl = document.getElementById(infoId);
+            const ctrlEl = document.getElementById(controlsId);
+
+            if (!tbody || !infoEl || !ctrlEl) return;
+
+            const allRows = Array.from(tbody.querySelectorAll('tr'));
+
+            // Hide pagination bar if empty state (single colspan row)
+            if (allRows.length === 1 && allRows[0].querySelector('td[colspan]')) {
+                const bar = ctrlEl.closest('.pagination-bar');
+                if (bar) bar.style.display = 'none';
+                return;
+            }
+
+            // Also hide if 8 or fewer rows — no pagination needed
+            if (allRows.length <= ROWS_PER_PAGE) {
+                const bar = ctrlEl.closest('.pagination-bar');
+                if (bar) bar.style.display = 'none';
+                return;
+            }
+
+            const totalRows  = allRows.length;
+            const totalPages = Math.ceil(totalRows / ROWS_PER_PAGE);
+            let currentPage  = 1;
+
+            function render(page) {
+                currentPage = page;
+                const start = (page - 1) * ROWS_PER_PAGE;
+                const end   = start + ROWS_PER_PAGE;
+
+                allRows.forEach((row, i) => {
+                    row.style.display = (i >= start && i < end) ? '' : 'none';
+                });
+
+                const displayEnd = Math.min(end, totalRows);
+                infoEl.textContent = `Showing ${start + 1}–${displayEnd} of ${totalRows} rows`;
+
+                // Rebuild controls
+                ctrlEl.innerHTML = '';
+
+                // Prev button
+                ctrlEl.appendChild(createPgBtn('&#8592;', page === 1, () => render(page - 1)));
+
+                // Page number buttons
+                const range = pageRange(currentPage, totalPages);
+                let lastNum = 0;
+                range.forEach(num => {
+                    if (num - lastNum > 1) {
+                        const ellipsis = document.createElement('span');
+                        ellipsis.textContent = '…';
+                        ellipsis.style.cssText = 'padding:0 6px;color:var(--muted);font-size:13px;align-self:center;';
+                        ctrlEl.appendChild(ellipsis);
+                    }
+                    const pgBtn = createPgBtn(num, false, () => render(num));
+                    if (num === currentPage) pgBtn.classList.add('active');
+                    ctrlEl.appendChild(pgBtn);
+                    lastNum = num;
+                });
+
+                // Next button
+                ctrlEl.appendChild(createPgBtn('&#8594;', page === totalPages, () => render(page + 1)));
+            }
+
+            function createPgBtn(label, disabled, onClick) {
+                const btn = document.createElement('button');
+                btn.className = 'pg-btn';
+                btn.innerHTML = label;
+                btn.disabled  = disabled;
+                if (!disabled) btn.addEventListener('click', onClick);
+                return btn;
+            }
+
+            function pageRange(current, total) {
+                const delta = 1;
+                const range = new Set();
+                range.add(1);
+                range.add(total);
+                for (let i = Math.max(2, current - delta); i <= Math.min(total - 1, current + delta); i++) {
+                    range.add(i);
+                }
+                return Array.from(range).sort((a, b) => a - b);
+            }
+
+            render(1);
+        }
+
+        // Init pagination for all four tables
+        initPagination('users-tbody',      'users-pagination-info',      'users-pagination-controls');
+        initPagination('donors-tbody',     'donors-pagination-info',     'donors-pagination-controls');
+        initPagination('requestors-tbody', 'requestors-pagination-info', 'requestors-pagination-controls');
+        initPagination('bloodunits-tbody', 'bloodunits-pagination-info', 'bloodunits-pagination-controls');
 
     })();
     </script>
