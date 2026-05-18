@@ -33,6 +33,7 @@
             color: var(--text);
             min-height: 100vh;
             display: flex;
+            align-items: flex-start;
         }
 
         /* ===== MOBILE TOP BAR ===== */
@@ -174,10 +175,10 @@
 
         /* ===== MAIN CONTENT ===== */
         .main-content {
-            margin-left: var(--sidebar-w);
-            flex: 1;
-            padding: 40px 40px 40px 20px;
-            min-width: 0;
+           margin-left: var(--sidebar-w);
+           padding: 24px 40px 40px 24px;
+           min-width: 0;
+           width: calc(100% - var(--sidebar-w));
         }
 
         /* ===== SECTIONS ===== */
@@ -485,6 +486,7 @@
 
             .main-content {
                 margin-left: 0;
+                width: 100%;
                 padding: 24px 16px 40px;
             }
             .account-grid { grid-template-columns: 1fr; gap: 10px; }

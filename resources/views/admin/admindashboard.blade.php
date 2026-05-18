@@ -30,6 +30,7 @@
             color: var(--text);
             min-height: 100vh;
             display: flex;
+            align-items: flex-start;
         }
 
         /* ===== MOBILE TOP BAR ===== */
@@ -172,10 +173,10 @@
 
         /* ===== MAIN CONTENT ===== */
         .main-content {
-            margin-left: var(--sidebar-w);
-            flex: 1;
-            padding: 40px 40px 40px 20px;
-            min-width: 0;
+           margin-left: var(--sidebar-w);
+           padding: 24px 40px 40px 24px;
+           min-width: 0;
+           width: calc(100% - var(--sidebar-w));
         }
 
         /* ===== SECTIONS ===== */
@@ -190,14 +191,6 @@
             margin-bottom: 24px;
             padding-bottom: 12px;
             border-bottom: 2px solid var(--border);
-        }
-        .section-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: .8px;
-            margin: 32px 0 12px;
         }
 
         /* ===== ACCOUNT CARD ===== */
@@ -235,6 +228,18 @@
             font-weight: 500;
         }
 
+        /* ===== REPORT ACTIONS (in account tab) ===== */
+        .report-actions {
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(0,0,0,.1);
+        }
+        .report-actions p {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
         /* ===== BUTTON ===== */
         .btn {
             display: inline-flex;
@@ -253,6 +258,21 @@
         .btn:hover  { opacity: .85; }
         .btn:active { transform: scale(.98); }
         .btn-primary { background: var(--red); color: #fff; }
+
+        /* ===== TABLE PAGE HEADER ===== */
+        .table-page-header {
+            margin-bottom: 6px;
+        }
+        .table-page-header h1 {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .table-page-divider {
+            border: none;
+            border-top: 2px solid var(--border);
+            margin: 0 0 20px;
+        }
 
         /* ===== TABLE ===== */
         .table-wrap {
@@ -357,6 +377,7 @@
 
             .main-content {
                 margin-left: 0;
+                width: 100%;
                 padding: 24px 16px 40px;
             }
             .account-grid { grid-template-columns: 1fr; gap: 10px; }
@@ -392,8 +413,17 @@
             <a href="#" class="nav-link active" data-section="adminaccount">
                 <span class="nav-num">1</span> Admin Account
             </a>
-            <a href="#" class="nav-link" data-section="generalreport">
-                <span class="nav-num">2</span> General Report
+            <a href="#" class="nav-link" data-section="report-users">
+                <span class="nav-num">2</span> Users
+            </a>
+            <a href="#" class="nav-link" data-section="report-donors">
+                <span class="nav-num">3</span> Donors
+            </a>
+            <a href="#" class="nav-link" data-section="report-requestors">
+                <span class="nav-num">4</span> Requestors
+            </a>
+            <a href="#" class="nav-link" data-section="report-bloodunits">
+                <span class="nav-num">5</span> Blood Units
             </a>
         </nav>
 
@@ -435,20 +465,23 @@
                         <span>{{ auth()->user()->created_at->format('M d, Y') }}</span>
                     </div>
                 </div>
+
+                <div class="report-actions">
+                    <p>Export a full PDF report covering all users, donors, requestors, and blood units.</p>
+                    <form method="POST" action="{{ route('report.pdf') }}">
+                        @csrf
+                        <button type="submit" class="btn btn-primary">&#128196; Generate PDF Report</button>
+                    </form>
+                </div>
             </div>
         </section>
 
-        <!-- ── 2. General Report ── -->
-        <section id="generalreport" class="page-content">
-            <h1>MORO General Report</h1>
-
-            <form method="POST" action="{{ route('report.pdf') }}" style="margin-bottom: 28px;">
-                @csrf
-                <button type="submit" class="btn btn-primary">&#128196; Generate PDF Report</button>
-            </form>
-
-            <!-- Users -->
-            <h3 class="section-label">Users</h3>
+        <!-- ── 2. Users ── -->
+        <section id="report-users" class="page-content">
+            <div class="table-page-header">
+                <h1>Users</h1>
+            </div>
+            <hr class="table-page-divider">
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -481,9 +514,14 @@
                 <span class="pagination-info" id="users-pagination-info"></span>
                 <div class="pagination-controls" id="users-pagination-controls"></div>
             </div>
+        </section>
 
-            <!-- Donors -->
-            <h3 class="section-label">Donors</h3>
+        <!-- ── 3. Donors ── -->
+        <section id="report-donors" class="page-content">
+            <div class="table-page-header">
+                <h1>Donors</h1>
+            </div>
+            <hr class="table-page-divider">
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -526,9 +564,14 @@
                 <span class="pagination-info" id="donors-pagination-info"></span>
                 <div class="pagination-controls" id="donors-pagination-controls"></div>
             </div>
+        </section>
 
-            <!-- Requestors -->
-            <h3 class="section-label">Requestors</h3>
+        <!-- ── 4. Requestors ── -->
+        <section id="report-requestors" class="page-content">
+            <div class="table-page-header">
+                <h1>Requestors</h1>
+            </div>
+            <hr class="table-page-divider">
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -577,9 +620,14 @@
                 <span class="pagination-info" id="requestors-pagination-info"></span>
                 <div class="pagination-controls" id="requestors-pagination-controls"></div>
             </div>
+        </section>
 
-            <!-- Blood Units -->
-            <h3 class="section-label">Blood Units</h3>
+        <!-- ── 5. Blood Units ── -->
+        <section id="report-bloodunits" class="page-content">
+            <div class="table-page-header">
+                <h1>Blood Units</h1>
+            </div>
+            <hr class="table-page-divider">
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -610,7 +658,6 @@
                 <span class="pagination-info" id="bloodunits-pagination-info"></span>
                 <div class="pagination-controls" id="bloodunits-pagination-controls"></div>
             </div>
-
         </section>
 
     </div><!-- /.main-content -->
@@ -648,7 +695,10 @@
         document.addEventListener('keydown', function (e) {
             if (['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) return;
             if (e.key === '1') showSection('adminaccount');
-            if (e.key === '2') showSection('generalreport');
+            if (e.key === '2') showSection('report-users');
+            if (e.key === '3') showSection('report-donors');
+            if (e.key === '4') showSection('report-requestors');
+            if (e.key === '5') showSection('report-bloodunits');
         });
 
         // Hash routing
@@ -687,12 +737,6 @@
         // ===== PAGINATION ENGINE =====
         const ROWS_PER_PAGE = 8;
 
-        /**
-         * Sets up client-side pagination for a table tbody.
-         * @param {string} tbodyId    - ID of the <tbody> element
-         * @param {string} infoId     - ID of the info <span>
-         * @param {string} controlsId - ID of the controls container
-         */
         function initPagination(tbodyId, infoId, controlsId) {
             const tbody  = document.getElementById(tbodyId);
             const infoEl = document.getElementById(infoId);
@@ -701,6 +745,7 @@
             if (!tbody || !infoEl || !ctrlEl) return;
 
             const allRows = Array.from(tbody.querySelectorAll('tr'));
+            const totalRows = allRows.length;
 
             // Hide pagination bar if empty state (single colspan row)
             if (allRows.length === 1 && allRows[0].querySelector('td[colspan]')) {
@@ -716,7 +761,6 @@
                 return;
             }
 
-            const totalRows  = allRows.length;
             const totalPages = Math.ceil(totalRows / ROWS_PER_PAGE);
             let currentPage  = 1;
 

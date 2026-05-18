@@ -31,6 +31,7 @@
             color: var(--text);
             min-height: 100vh;
             display: flex;
+            align-items: flex-start;
         }
 
         /* ===== MOBILE TOP BAR ===== */
@@ -177,9 +178,9 @@
         /* ===== MAIN CONTENT ===== */
         .main-content {
             margin-left: var(--sidebar-w);
-            flex: 1;
-            padding: 40px 40px 40px 20px;
+            padding: 24px 40px 40px 24px;
             min-width: 0;
+            width: calc(100% - var(--sidebar-w));
         }
 
         /* ===== SECTIONS ===== */
@@ -194,6 +195,9 @@
             margin-bottom: 24px;
             padding-bottom: 12px;
             border-bottom: 2px solid var(--border);
+            text-align: left;
+            max-width: 680px;
+            margin-left: 0;
         }
         .page-content h3 {
             font-size: 14px;
@@ -202,6 +206,7 @@
             text-transform: uppercase;
             letter-spacing: .8px;
             margin: 28px 0 14px;
+            text-align: left;
         }
 
         /* ===== ACCOUNT CARD ===== */
@@ -210,6 +215,8 @@
             border-radius: var(--radius);
             padding: 24px;
             box-shadow: var(--shadow);
+            max-width: 680px;
+            margin-left: 0;
         }
         .account-card h3 {
             font-size: 18px;
@@ -217,6 +224,7 @@
             text-transform: none;
             letter-spacing: 0;
             margin: 0 0 16px;
+            text-align: left;
         }
         .account-grid {
             display: grid;
@@ -241,13 +249,14 @@
         }
 
         /* ===== NOTIFICATIONS ===== */
-        .notif-list { margin-top: 28px; }
+        .notif-list { margin-top: 28px; max-width: 680px; margin-left: 0;}
         .notif-list > h3 {
             font-size: 16px;
             color: var(--text);
             text-transform: none;
             letter-spacing: 0;
             margin-bottom: 14px;
+            text-align: left;
         }
         .notif-item {
             background: var(--yellow);
@@ -257,7 +266,7 @@
             margin-bottom: 10px;
             box-shadow: var(--shadow);
         }
-        .notif-item p { margin: 0 0 6px; font-size: 14px; line-height: 1.5; }
+        .notif-item p { margin: 0 0 6px; font-size: 14px; line-height: 1.5; text-align: left; }
         .notif-item small { color: var(--muted); font-size: 12px; }
         .notif-empty {
             background: var(--yellow);
@@ -265,15 +274,22 @@
             border-radius: var(--radius);
             color: var(--muted);
             font-size: 14px;
+            text-align: left;
         }
 
         /* ===== FORMS ===== */
+        form {
+            max-width: 680px;
+            margin-left: 0;
+            margin-right: auto;
+        }
         form label {
             display: block;
             font-size: 13px;
             font-weight: 600;
             color: var(--muted);
             margin-bottom: 5px;
+            text-align: left;
         }
         form input,
         form select,
@@ -381,6 +397,7 @@
 
             .main-content {
                 margin-left: 0;
+                width: 100%;
                 padding: 24px 16px 40px;
             }
 

@@ -108,7 +108,7 @@ button:hover { background-color: black; color: white; }  /* Unified hover */
 
 .page-content label, .staff label, .admin label, .page-content h3,
 .staff h3, .admin h3 {
-    text-align: center;
+    text-align: left;
     display: block;
     margin-top: 10px;
     margin-bottom: 20px;
@@ -183,7 +183,7 @@ th, td { border: 1px solid #000000; text-align: left; }
 
 /* Headings & Images (keep your originals) */
 h1, h2 { 
-    text-align: center;
+    text-align: left;
     margin-bottom: 20px;
     color: #000000;
 }
