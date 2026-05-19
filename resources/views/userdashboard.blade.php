@@ -178,7 +178,7 @@
         /* ===== MAIN CONTENT ===== */
         .main-content {
             margin-left: var(--sidebar-w);
-            padding: 24px 40px 40px 24px;
+            padding: 24px 16px 40px 16px;
             min-width: 0;
             width: calc(100% - var(--sidebar-w));
         }
@@ -215,7 +215,7 @@
             border-radius: var(--radius);
             padding: 24px;
             box-shadow: var(--shadow);
-            max-width: 680px;
+            max-width: none;
             margin-left: 0;
         }
         .account-card h3 {
@@ -249,7 +249,7 @@
         }
 
         /* ===== NOTIFICATIONS ===== */
-        .notif-list { margin-top: 28px; max-width: 680px; margin-left: 0;}
+        .notif-list { margin-top: 28px; max-width: 680px; margin-left: 16px; margin-right: 16px;}
         .notif-list > h3 {
             font-size: 16px;
             color: var(--text);
@@ -279,9 +279,9 @@
 
         /* ===== FORMS ===== */
         form {
-            max-width: 680px;
+            max-width: none;
             margin-left: 0;
-            margin-right: auto;
+            margin-right: 0;
         }
         form label {
             display: block;
